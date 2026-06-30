@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment # Deployment is a higher-level concept that manages ReplicaSets and Pods.
+metadata:
+  name: {{ .Values.apiGateway.releaseName }}-deployment # The name of the Deployment. This is how you will refer to this Deployment in other Kubernetes resources.
+  labels:
+    app: {{ .Values.apiGateway.releaseName }}-app
+
+# the desired state of the app
+spec:
+  replicas: {{ .Values.apiGateway.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.apiGateway.releaseName }}-app # It ensures that the Deployment only manages pods with the label app: api-gateway.
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apiGateway.releaseName }}-app
+
+    # specs of container to pull
+    spec:
+      containers: #
+        - name: {{  .Values.apiGateway.releaseName }}-container
+          image: {{ .Values.apiGateway.imageRegistry.gcp }}/{{ .Values.apiGateway.image.repository }}:{{ .Values.apiGateway.image.tag }}
+          ports:
+            - containerPort: {{ .Values.apiGateway.image.port }}
+          env:
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: PORT
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: NODE_ENV 
+              
+       
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DB_HOST
+
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DB_PORT
+
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DB_NAME
+
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DB_USER
+
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DB_PASSWORD
+
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: JWT_SECRET
+
+            - name: JWT_EXPIRES_IN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: JWT_EXPIRES_IN
+
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: JWT_REFRESH_SECRET
+
+            - name: JWT_REFRESH_EXPIRES_IN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: JWT_REFRESH_EXPIRES_IN
+
+            - name: RATE_LIMIT_WINDOW_MS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: RATE_LIMIT_WINDOW_MS
+
+            - name: RATE_LIMIT_MAX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: RATE_LIMIT_MAX
+
+            - name: CORS_ORIGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: CORS_ORIGINS
+
+            - name: RIDER_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: RIDER_SERVICE_URL
+
+            - name: DRIVER_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DRIVER_SERVICE_URL
+
+            - name: LOCATION_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: LOCATION_SERVICE_URL
+
+            - name: DRIVER_ASSIGNMENT_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DRIVER_ASSIGNMENT_SERVICE_URL
+
+            - name: RIDER_WS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: RIDER_WS_URL
+                  
+            - name: DRIVER_WS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.apiGateway.releaseName }}-config
+                  key: DRIVER_WS_URL

@@ -1,0 +1,16 @@
+process.env.NODE_ENV = 'test';
+process.env.JWT_SECRET = 'test_jwt_secret';
+process.env.JWT_EXPIRES_IN = '1h';
+process.env.JWT_REFRESH_SECRET = 'test_refresh_secret';
+process.env.JWT_REFRESH_EXPIRES_IN = '7d';
+process.env.DB_HOST = 'localhost';
+process.env.DB_PORT = '5432';
+process.env.DB_NAME = 'ride_hailing_db_test';
+process.env.DB_USER = 'zannujulius';
+process.env.DB_PASSWORD = '';
+process.env.RATE_LIMIT_WINDOW_MS = '900000';
+process.env.RATE_LIMIT_MAX = '1000';
+process.env.RIDER_SERVICE_URL = 'http://localhost:3001';
+process.env.DRIVER_SERVICE_URL = 'http://localhost:3002';
+process.env.LOCATION_SERVICE_URL = 'http://localhost:3003';
+process.env.DRIVER_ASSIGNMENT_SERVICE_URL = 'http://localhost:3004';

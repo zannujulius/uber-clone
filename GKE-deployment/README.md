@@ -1,0 +1,14 @@
+- install gcloud on your pc
+- run glcoud init
+- run a new configuration
+- set the zone
+- check your project id by runnning glcoud projects list
+- save it to your env PROJECT_I=[your gcp prject id]
+- build your micro-services application
+- docker build buildx --platform linux/arm64 -t us-east1.docker.pkg.dev/[app name]:v1  .
+- test the application running in the container using
+- docker run -d -p 3000:3000 us-east1.docker.pkg.dev/[app name]:v1 
+- curl http:localhost:3000/health
+- next step is to push to the GAR
+- Create a GAR
+- gcloud artifacts repositories create uber-repo --repository-format=docker --location=us-east1

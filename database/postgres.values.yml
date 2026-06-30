@@ -1,0 +1,18 @@
+auth:
+  username: zannujulius
+  password: uber_password
+  database: ride_hailing_db
+  postgresPassword: uber_postgres_admin
+
+primary:
+  persistence:
+    enabled: true
+    size: 5Gi
+
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m
+  limits:
+    memory: 512Mi
+    cpu: 500m
