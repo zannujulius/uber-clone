@@ -1,17 +1,18 @@
 apiGateway:
+  releaseName: api-gateway
   imageRegistry:
     gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
-
-  releaseName: api-gateway
   replicaCount: 3
   image:
     name: api-gateway
-    repository: uber-repo
-    tag: v5
+    repository: api-gateway
+    tag: v6
     pullPolicy: IfNotPresent
     port: 3000
+    env:
+      NODE_ENV: development
   postgres:
-    DB_HOST: postgres
+    DB_HOST: uber-db-postgresql.uber-app-ns.svc.cluster.local
     DB_PORT: 5432
     DB_NAME: ride_hailing_db
     DB_USER: zannujulius
@@ -28,10 +29,9 @@ apiGateway:
     CORS_ORIGINS: http://localhost:5173
   service:
     type: LoadBalancer
-    port: 3000
+    port: 80
     targetPort: 3000
-    nodePort: 3000
-  external_services:
+  services:
     RIDER_SERVICE_URL: http://localhost:3001
     DRIVER_SERVICE_URL: http://localhost:3002
     LOCATION_SERVICE_URL: http://localhost:3003

@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service # ServiceTypes allow you to specify what kind of Service you want
 metadata:
   name: {{ .Values.apiGateway.releaseName }}-service
@@ -8,7 +8,8 @@ spec:
   selector:
     app: {{ .Values.apiGateway.releaseName }}-app # This selector will match the labels of the pods that this service should route traffic to
   # This service will be accessible from outside the cluster.
-  type: LoadBalancer
   ports:
-    - port: {{ .Values.apiGateway.image.port }}
-      targetPort: {{ .Values.apiGateway.image.port }}
+    - protocol: TCP
+      port: {{ .Values.apiGateway.service.port }} # external port that the service will expose
+      targetPort: {{ .Values.apiGateway.service.targetPort }} # internal port on the pod that the service will forward traffic to
+  type: {{ .Values.apiGateway.service.type }}

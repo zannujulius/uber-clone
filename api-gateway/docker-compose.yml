@@ -1,20 +1,20 @@
 services:
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: uber
-      POSTGRES_PASSWORD: uber_password
-      POSTGRES_DB: uber_gateway
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U uber -d uber_gateway"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  # postgres:
+  #   image: postgres:16-alpine
+  #   restart: unless-stopped
+  #   environment:
+  #     POSTGRES_USER: uber
+  #     POSTGRES_PASSWORD: uber_password
+  #     POSTGRES_DB: uber_gateway
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U uber -d uber_gateway"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
 
   api-gateway:
     build:
@@ -25,13 +25,13 @@ services:
         - linux/arm64
     image: us-east1-docker.pkg.dev/${PROJECT_ID}/${GAR_REPOSITORY}/api-gateway:v5
     restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
+    # depends_on:
+    # postgres:
+    #   condition: service_healthy
     environment:
-      PORT: 3000
-      NODE_ENV: development
-      DB_HOST: postgres
+      PORT: ${PORT}
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
@@ -42,15 +42,15 @@ services:
       JWT_REFRESH_EXPIRES_IN: 30d
       RATE_LIMIT_WINDOW_MS: 900000
       RATE_LIMIT_MAX: 100
-      CORS_ORIGINS: http://localhost:5173
-      RIDER_SERVICE_URL: http://localhost:3001
-      DRIVER_SERVICE_URL: http://localhost:3002
-      LOCATION_SERVICE_URL: http://localhost:3003
-      DRIVER_ASSIGNMENT_SERVICE_URL: http://localhost:3004
-      RIDER_WS_URL: ws://localhost:3010
-      DRIVER_WS_URL: ws://localhost:3011
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      RIDER_SERVICE_URL: ${RIDER_SERVICE_URL}
+      DRIVER_SERVICE_URL: ${DRIVER_SERVICE_URL}
+      LOCATION_SERVICE_URL: ${LOCATION_SERVICE_URL}
+      DRIVER_ASSIGNMENT_SERVICE_URL: ${DRIVER_ASSIGNMENT_SERVICE_URL}
+      RIDER_WS_URL: ${RIDER_WS_URL}
+      DRIVER_WS_URL: ${DRIVER_WS_URL}
     ports:
       - "3000:3000"
 
 volumes:
-  postgres_data:
+  # postgres_data:
