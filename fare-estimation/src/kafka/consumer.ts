@@ -15,6 +15,7 @@ export const startConsumer = async (): Promise<void> => {
 
   const estimateTopic =
     process.env.KAFKA_ESTIMATE_REQUEST_TOPIC || "rider.trip.estimate.requested";
+
   const tripRequestedTopic =
     process.env.KAFKA_TRIP_REQUEST_TOPIC || "rider.trip.requested";
 

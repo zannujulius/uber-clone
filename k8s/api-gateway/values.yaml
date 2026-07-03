@@ -6,7 +6,7 @@ apiGateway:
   image:
     name: api-gateway
     repository: api-gateway
-    tag: v6
+    tag: v9
     pullPolicy: IfNotPresent
     port: 3000
     env:
@@ -28,9 +28,16 @@ apiGateway:
   cors:
     CORS_ORIGINS: http://localhost:5173
   service:
-    type: LoadBalancer
+    type: ClusterIP
     port: 80
     targetPort: 3000
+  # resources:
+  #   requests:
+  #     memory: "128Mi"
+  #     cpu: "100m"
+  #   limits:
+  #     memory: "256Mi"
+  #     cpu: "300m"
   services:
     RIDER_SERVICE_URL: http://localhost:3001
     DRIVER_SERVICE_URL: http://localhost:3002
