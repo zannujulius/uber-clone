@@ -11,3 +11,6 @@ kubectl get configmaps <CONFIGMAP_NAME> -o yaml
 docker images
 docker container ls -a
 docker logs <CONTAINER_NAME>
+
+<!--
+great now that the values.yml is shared across the all deployment can i just run helm install in the k8s so it will dek -->

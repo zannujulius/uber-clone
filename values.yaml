@@ -1,0 +1,39 @@
+fareEstimation:
+  releaseName: fare-estimation
+  imageRegistry:
+    gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
+  replicaCount: 1
+  image:
+    repository: fare-estimation
+    tag: v1
+    pullPolicy: IfNotPresent
+    port: 3012
+  service:
+    port: 3012
+    targetPort: 3012
+  fare:
+    BASE_FARE: "500"
+    TIME_RATE: "50"
+    DISTANCE_RATE: "300"
+    SURGE_MULTIPLIER: "1"
+    CURRENCY: "RWF"
+    FALLBACK_AVERAGE_SPEED_KPH: "28"
+
+database:
+  postgres:
+    DB_HOST: uber-db-postgres-postgresql.uber-app-ns.svc.cluster.local
+    DB_PORT: "5432"
+    DB_NAME: ride_hailing_db
+    DB_USER: zannujulius
+    DB_PASSWORD: uber_password
+
+kafka:
+  BROKERS: uber-kafka.uber-app-ns.svc.cluster.local:9092
+  CLIENT_ID: fare-estimation
+  GROUP_ID: fare-estimation-group
+  ESTIMATE_REQUEST_TOPIC: rider.trip.estimate.requested
+  TRIP_REQUEST_TOPIC: rider.trip.requested
+  NOTIFICATION_TOPIC: rider.notifications
+
+google_api:
+  GOOGLE_MAPS_API_KEY: ""

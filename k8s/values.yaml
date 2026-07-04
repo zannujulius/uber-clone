@@ -1,0 +1,88 @@
+database:
+  postgres:
+    DB_HOST: uber-db-postgresql.uber-app-ns.svc.cluster.local
+    DB_PORT: 5432
+    DB_NAME: ride_hailing_db
+    DB_USER: zannujulius
+    DB_PASSWORD: uber_password
+
+apiGateway:
+  releaseName: api-gateway
+  imageRegistry:
+    gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
+  replicaCount: 3
+  image:
+    name: api-gateway
+    repository: api-gateway
+    tag: v9
+    pullPolicy: IfNotPresent
+    port: 3000
+    env:
+      NODE_ENV: development
+
+  jwt:
+    JWT_SECRET: "eating!!@223upTwich21ggS"
+    JWT_EXPIRES_IN: 7d
+    JWT_REFRESH_SECRET: "EVhapen@@!!dsdd"
+    JWT_REFRESH_EXPIRES_IN: 30d
+  rate_limit:
+    RATE_LIMIT_WINDOW_MS: 900000
+    RATE_LIMIT_MAX: 100
+  cors:
+    CORS_ORIGINS: http://localhost:5173
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+  # resources:
+  #   requests:
+  #     memory: "128Mi"
+  #     cpu: "100m"
+  #   limits:
+  #     memory: "256Mi"
+  #     cpu: "300m"
+  services:
+    RIDER_SERVICE_URL: http://localhost:3001
+    DRIVER_SERVICE_URL: http://localhost:3002
+    LOCATION_SERVICE_URL: http://localhost:3003
+    DRIVER_ASSIGNMENT_SERVICE_URL: http://localhost:3004
+    RIDER_WS_URL: ws://localhost:3010
+    DRIVER_WS_URL: ws://localhost:3011
+
+fare-estimation:
+  releaseName: fare-estimation
+  imageRegistry:
+    gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
+  replicaCount: 1
+  image:
+    name: fare-estimation
+    repository: fare-estimation
+    tag: v2
+    pullPolicy: IfNotPresent
+    port: 3012
+    env:
+      NODE_ENV: development
+
+kafka:
+  KAFKA_BROKERS: uber-kafka.uber-app-ns.svc.cluster.local:9092
+
+  KAFKA_CLIENT_ID: fare-estimation
+  KAFKA_GROUP_ID: fare-estimation-group
+
+  topics:
+    riderTripRequested:
+      name: rider.trip.requested
+    riderTripEstimateRequested:
+      name: rider.trip.estimate.requested
+    riderNotifications:
+      name: rider.notifications
+
+  FARE_BASE_FARE: 500
+  FARE_TIME_RATE: 50
+  FARE_DISTANCE_RATE: 300
+  FARE_SURGE_MULTIPLIER: 1
+  FARE_CURRENCY: RWF
+  FARE_FALLBACK_AVERAGE_SPEED_KPH: 28
+
+google_api:
+  GOOGLE_MAPS_API_KEY: AIzaSyC8V6tQNc5t-wQb5DUnr1mOwhQ5qcGu7jI
