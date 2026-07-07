@@ -51,17 +51,3 @@ apiGateway:
     DRIVER_ASSIGNMENT_SERVICE_URL: http://localhost:3004
     RIDER_WS_URL: ws://localhost:3010
     DRIVER_WS_URL: ws://localhost:3011
-
-fare-estimation:
-  releaseName: fare-estimation
-  imageRegistry:
-    gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
-  replicaCount: 1
-  image:
-    name: fare-estimation
-    repository: fare-estimation
-    tag: v1
-    pullPolicy: IfNotPresent
-    port: 3012
-    env:
-      NODE_ENV: development

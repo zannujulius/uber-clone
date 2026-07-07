@@ -1,0 +1,14 @@
+fare-estimation:
+  releaseName: fare-estimation
+  imageRegistry:
+    # gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
+    ghcr: "ghcr.io"
+  replicaCount: 1
+  image:
+    name: fare-estimation
+    repository: fare-estimation
+    tag: v1
+    pullPolicy: IfNotPresent
+    port: 3012
+    env:
+      NODE_ENV: production

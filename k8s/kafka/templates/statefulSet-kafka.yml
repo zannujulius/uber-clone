@@ -41,6 +41,12 @@ spec:
               value: {{ .Values.kafka.configuration.LISTENER_SECURITY_PROTOCOL_MAP }}
             - name: KAFKA_CONTROLLER_LISTENER_NAMES
               value: {{ .Values.kafka.configuration.KAFKA_CONTROLLER_LISTENER_NAMES }}
+            - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+              value: "1"
+            - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+              value: "1"
             - name: CLUSTER_NAME
               value: "{{ .Values.kafka.clusterName }}"
             - name: CLUSTER_ID
@@ -51,8 +57,8 @@ spec:
             - |
               # Extract numeric index from pod name (e.g., kafka-0 -> 0)
               export KAFKA_NODE_ID=$(echo $KAFKA_NODE_ID | awk -F'-' '{print $NF}')
-              # Generate advertised listeners dynamically per pod
-              export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://kafka-${KAFKA_NODE_ID}.kafka-service.{{ .Values.cluster.namespace }}.svc.cluster.local:9092"
+              # Generate advertised listeners dynamically per pod using full pod hostname
+              export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${HOSTNAME}.{{ .Values.kafka.releaseName }}-service.{{ .Values.cluster.namespace }}.svc.cluster.local:9092"
               exec /etc/confluent/docker/run
   volumeClaimTemplates:
     - metadata:
