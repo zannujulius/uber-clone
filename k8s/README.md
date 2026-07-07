@@ -1,3 +1,66 @@
+## Multipass — Local VM Setup for k3s
+
+Multipass is used to create lightweight Ubuntu VMs on your Mac to run a local k3s cluster that mirrors a real Kubernetes deployment.
+
+### Install
+
+```bash
+brew install --cask multipass
+```
+
+Open the Multipass app from Applications and wait for the daemon to start before running any commands.
+
+### Create nodes
+
+```bash
+multipass launch --name k3s-server --cpus 3 --memory 4G --disk 20G
+multipass launch --name k3s-agent1 --cpus 3 --memory 4G --disk 20G
+```
+
+### Install k3s on server
+
+```bash
+multipass exec k3s-server -- bash -c "curl -sfL https://get.k3s.io | sh -"
+```
+
+### Join agent to the cluster
+
+```bash
+TOKEN=$(multipass exec k3s-server -- sudo cat /var/lib/rancher/k3s/server/node-token)
+SERVER_IP=$(multipass info k3s-server | grep IPv4 | awk '{print $2}')
+
+multipass exec k3s-agent1 -- bash -c "curl -sfL https://get.k3s.io | K3S_URL=https://${SERVER_IP}:6443 K3S_TOKEN=${TOKEN} sh -"
+```
+
+### Configure kubectl to use the k3s cluster
+
+```bash
+multipass exec k3s-server -- sudo cat /etc/rancher/k3s/k3s.yaml > ~/.kube/k3s-config
+SERVER_IP=$(multipass info k3s-server | grep IPv4 | awk '{print $2}')
+sed -i '' "s/127.0.0.1/${SERVER_IP}/" ~/.kube/k3s-config
+export KUBECONFIG=~/.kube/k3s-config
+```
+
+### Verify both nodes are ready
+
+```bash
+kubectl get nodes
+```
+
+### Useful multipass commands
+
+```bash
+multipass list                        # list all VMs
+multipass info k3s-server             # show VM details and IP
+multipass shell k3s-server            # SSH into a VM
+multipass stop k3s-server k3s-agent1  # stop VMs
+multipass start k3s-server k3s-agent1 # start VMs
+multipass delete k3s-server           # delete a VM
+multipass purge                       # permanently remove deleted VMs
+```
+
+---
+
 helm install <APPLICATION_NAME> <HELM_CHART_PATH>
 helm list
 helm uninstall <APPLICATION_NAME>
