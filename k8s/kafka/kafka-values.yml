@@ -1,36 +1,36 @@
-listeners:
-  client:
-    protocol: PLAINTEXT
-  interbroker:
-    protocol: PLAINTEXT
+# listeners:
+#   client:
+#     protocol: PLAINTEXT
+#   interbroker:
+#     protocol: PLAINTEXT
 
-kraft:
-  enabled: true
+# kraft:
+#   enabled: true
 
-replicaCount: 1
+# replicaCount: 2
 
-persistence:
-  enabled: false
-  size: 2Gi
-  storageClass: standard
+# persistence:
+#   enabled: false
+#   size: 2Gi
+#   storageClass: standard
 
-# resources:
-#   requests:
-#     memory: 256Mi
-#     cpu: 150m
-#   limits:
-#     memory: 512Mi
-#     cpu: 300m
+# # resources:
+# #   requests:
+# #     memory: 256Mi
+# #     cpu: 150m
+# #   limits:
+# #     memory: 512Mi
+# #     cpu: 300m
 
-provisioning:
-  enabled: true
-  topics:
-    - name: rider.trip.requested
-      partitions: 3
-      replicationFactor: 1
-    - name: rider.trip.estimate.requested
-      partitions: 3
-      replicationFactor: 1
-    - name: rider.notifications
-      partitions: 3
-      replicationFactor: 1
+# provisioning:
+#   enabled: true
+#   topics:
+#     - name: rider.trip.requested
+#       partitions: 3
+#       replicationFactor: 1
+#     - name: rider.trip.estimate.requested
+#       partitions: 3
+#       replicationFactor: 1
+#     - name: rider.notifications
+#       partitions: 3
+#       replicationFactor: 1

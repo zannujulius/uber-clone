@@ -1,6 +1,6 @@
 database:
   postgres:
-    DB_HOST: uber-db-postgresql.uber-app-ns.svc.cluster.local
+    DB_HOST: uber-db-postgresql.uber-ns-app.svc.cluster.local
     DB_PORT: 5432
     DB_NAME: ride_hailing_db
     DB_USER: zannujulius
@@ -9,12 +9,15 @@ database:
 apiGateway:
   releaseName: api-gateway
   imageRegistry:
-    gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
-  replicaCount: 3
+    # gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
+    ghcr: "ghcr.io"
+  replicaCount: 2
   image:
     name: api-gateway
     repository: api-gateway
-    tag: v9
+    github:
+      owner: zannujulius
+    tag: v3
     pullPolicy: IfNotPresent
     port: 3000
     env:
@@ -57,32 +60,28 @@ fare-estimation:
   image:
     name: fare-estimation
     repository: fare-estimation
-    tag: v2
+    tag: v1
     pullPolicy: IfNotPresent
     port: 3012
     env:
       NODE_ENV: development
 
 kafka:
-  KAFKA_BROKERS: uber-kafka.uber-app-ns.svc.cluster.local:9092
-
-  KAFKA_CLIENT_ID: fare-estimation
-  KAFKA_GROUP_ID: fare-estimation-group
-
-  topics:
-    riderTripRequested:
-      name: rider.trip.requested
-    riderTripEstimateRequested:
-      name: rider.trip.estimate.requested
-    riderNotifications:
-      name: rider.notifications
-
-  FARE_BASE_FARE: 500
-  FARE_TIME_RATE: 50
-  FARE_DISTANCE_RATE: 300
-  FARE_SURGE_MULTIPLIER: 1
-  FARE_CURRENCY: RWF
-  FARE_FALLBACK_AVERAGE_SPEED_KPH: 28
-
-google_api:
-  GOOGLE_MAPS_API_KEY:
+  releaseName: kafka
+  spec:
+    replicas: 3
+  image:
+    name: confluentinc/cp-kafka
+    tag: 7.6.0
+    pullPolicy: IfNotPresent
+  service:
+    port: 9092
+    targetPort: 9092
+    controllerPort: 9093
+    controllerTargetPort: 9093
+  clusterName: kafka
+  configuration:
+    KAFKA_PROCESS_ROLES: broker,controller
+    KAFKA_CONTROLLER_QUORUM_VOTERS: "0@{{ .Values.kafka.releaseName }}-statefulset-0.{{ .Values.kafka.releaseName }}-service:9093,1@{{ .Values.kafka.releaseName }}-statefulset-1.{{ .Values.kafka.releaseName }}-service:9093,2@{{ .Values.kafka.releaseName }}-statefulset-2.{{ .Values.kafka.releaseName }}-service:9093"
+    KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+    LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"

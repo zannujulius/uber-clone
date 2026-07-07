@@ -14,9 +14,11 @@ spec:
       labels:
         app: {{ .Values.apiGateway.releaseName }}-app
     spec:
+      imagePullSecrets: # add secret for private registry access
+        - name: ghcr-secret
       containers:
         - name: {{ .Values.apiGateway.releaseName }}-container
-          image: {{ .Values.apiGateway.imageRegistry.gcp }}/{{ .Values.apiGateway.image.repository }}:{{ .Values.apiGateway.image.tag }}
+          image: {{ .Values.apiGateway.imageRegistry.ghcr }}/{{ .Values.apiGateway.image.github.owner }}/{{ .Values.apiGateway.image.repository }}:{{ .Values.apiGateway.image.tag }}
           imagePullPolicy: {{ .Values.apiGateway.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.apiGateway.image.port }}
