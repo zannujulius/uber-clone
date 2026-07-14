@@ -6,3 +6,5 @@ global:
       DB_NAME: ride_hailing_db
       DB_USER: zannujulius
       DB_PASSWORD: uber_password
+  jwt:
+    JWT_SECRET: "eating!!@223upTwich21ggS"

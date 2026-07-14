@@ -12,7 +12,7 @@ data:
   DB_USER: {{ .Values.global.database.postgres.DB_USER | quote }}
   DB_PASSWORD: {{ .Values.global.database.postgres.DB_PASSWORD | quote }}
 
-  JWT_SECRET: {{ .Values.apiGateway.jwt.JWT_SECRET | quote }}
+  JWT_SECRET: {{ .Values.global.jwt.JWT_SECRET | quote }}
   JWT_EXPIRES_IN: {{ .Values.apiGateway.jwt.JWT_EXPIRES_IN | quote }}
   JWT_REFRESH_SECRET: {{ .Values.apiGateway.jwt.JWT_REFRESH_SECRET | quote }}
   JWT_REFRESH_EXPIRES_IN: {{ .Values.apiGateway.jwt.JWT_REFRESH_EXPIRES_IN | quote }}

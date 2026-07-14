@@ -32,5 +32,5 @@ apiGateway:
     DRIVER_SERVICE_URL: http://localhost:3002
     LOCATION_SERVICE_URL: http://localhost:3003
     DRIVER_ASSIGNMENT_SERVICE_URL: http://localhost:3004
-    RIDER_WS_URL: ws://localhost:3010
+    RIDER_WS_URL: ws://rider-websocket-server-service.uber-ns-app.svc.cluster.local:3010
     DRIVER_WS_URL: ws://localhost:3011
