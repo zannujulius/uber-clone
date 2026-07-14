@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{.Values.apiGateway.releaseName}}-config
+  name: {{ .Values.apiGateway.releaseName }}-config
 data:
   PORT: {{ .Values.apiGateway.image.port | quote }}
   NODE_ENV: {{ .Values.apiGateway.image.env.NODE_ENV | quote }}
 
-  DB_HOST: {{ .Values.database.postgres.DB_HOST | quote }}
-  DB_PORT: {{ .Values.database.postgres.DB_PORT | quote }}
-  DB_NAME: {{ .Values.database.postgres.DB_NAME | quote }}
-  DB_USER: {{ .Values.database.postgres.DB_USER | quote }}
-  DB_PASSWORD: {{ .Values.database.postgres.DB_PASSWORD | quote }}
+  DB_HOST: {{ .Values.global.database.postgres.DB_HOST | quote }}
+  DB_PORT: {{ .Values.global.database.postgres.DB_PORT | quote }}
+  DB_NAME: {{ .Values.global.database.postgres.DB_NAME | quote }}
+  DB_USER: {{ .Values.global.database.postgres.DB_USER | quote }}
+  DB_PASSWORD: {{ .Values.global.database.postgres.DB_PASSWORD | quote }}
 
   JWT_SECRET: {{ .Values.apiGateway.jwt.JWT_SECRET | quote }}
   JWT_EXPIRES_IN: {{ .Values.apiGateway.jwt.JWT_EXPIRES_IN | quote }}

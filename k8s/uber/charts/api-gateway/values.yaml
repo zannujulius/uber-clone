@@ -1,15 +1,6 @@
-database:
-  postgres:
-    DB_HOST: uber-db-postgresql.uber-ns-app.svc.cluster.local
-    DB_PORT: 5432
-    DB_NAME: ride_hailing_db
-    DB_USER: zannujulius
-    DB_PASSWORD: uber_password
-
 apiGateway:
   releaseName: api-gateway
   imageRegistry:
-    # gcp: "us-east1-docker.pkg.dev/luuke-494620/uber-repo"
     ghcr: "ghcr.io"
   replicaCount: 2
   image:
@@ -22,7 +13,6 @@ apiGateway:
     port: 3000
     env:
       NODE_ENV: development
-
   jwt:
     JWT_SECRET: "eating!!@223upTwich21ggS"
     JWT_EXPIRES_IN: 7d
@@ -37,13 +27,6 @@ apiGateway:
     type: ClusterIP
     port: 80
     targetPort: 3000
-  # resources:
-  #   requests:
-  #     memory: "128Mi"
-  #     cpu: "100m"
-  #   limits:
-  #     memory: "256Mi"
-  #     cpu: "300m"
   services:
     RIDER_SERVICE_URL: http://localhost:3001
     DRIVER_SERVICE_URL: http://localhost:3002

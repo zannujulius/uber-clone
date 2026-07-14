@@ -61,6 +61,38 @@ multipass purge                       # permanently remove deleted VMs
 
 ---
 
+## Nginx Ingress Controller
+
+The nginx ingress controller is the cluster-wide traffic entry point. It handles all incoming HTTP/HTTPS requests and routes them to the correct service based on ingress rules. It runs in its own namespace and serves all namespaces in the cluster.
+
+### Install
+
+```bash
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+helm install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --create-namespace
+```
+
+### Verify controller is running
+
+```bash
+kubectl get pods -n ingress-nginx
+kubectl get svc ingress-nginx-controller -n ingress-nginx --watch
+```
+
+On k3s the `EXTERNAL-IP` will stay `<pending>` — install MetalLB (see section below) to assign a real IP.
+
+### Check ingress rules across namespaces
+
+```bash
+kubectl get ingress -n uber-ns-app
+```
+
+---
+
 helm install <APPLICATION_NAME> <HELM_CHART_PATH>
 helm list
 helm uninstall <APPLICATION_NAME>
