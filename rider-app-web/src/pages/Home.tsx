@@ -55,8 +55,14 @@ export default function Home() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { rider, token } = useAppSelector((s) => s.auth);
-  const { pickup, dropoff, status, fareEstimate, fareEstimateStatus, fareEstimateError } =
-    useAppSelector((s) => s.ride);
+  const {
+    pickup,
+    dropoff,
+    status,
+    fareEstimate,
+    fareEstimateStatus,
+    fareEstimateError,
+  } = useAppSelector((s) => s.ride);
   const wsStatus = useAppSelector((s) => s.websocket.status);
 
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -337,7 +343,8 @@ export default function Home() {
                   {fareEstimateStatus === "ready" && fareEstimate ? (
                     <div>
                       <p className="text-accent font-bold text-sm">
-                        {fareEstimate.currency} {fareEstimate.amount.toLocaleString()}
+                        {fareEstimate.currency}{" "}
+                        {fareEstimate.amount.toLocaleString()}
                       </p>
                       <p className="text-[11px] text-zinc-500">
                         {fareEstimate.distanceKm.toFixed(1)} km ·{" "}
@@ -349,7 +356,9 @@ export default function Home() {
                       {fareEstimateError ?? "Unable to estimate fare"}
                     </p>
                   ) : (
-                    <p className="text-accent font-bold text-sm">Calculating…</p>
+                    <p className="text-accent font-bold text-sm">
+                      Calculating…
+                    </p>
                   )}
                 </div>
               </div>

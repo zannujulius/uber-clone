@@ -51,6 +51,9 @@ spec:
               value: "{{ .Values.kafka.clusterName }}"
             - name: CLUSTER_ID
               value: {{ .Values.kafka.configuration.CLUSTER_ID }}
+            - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+              value: "true"
+
           command:
             - sh
             - -c
