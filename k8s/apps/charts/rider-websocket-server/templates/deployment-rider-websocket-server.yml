@@ -38,10 +38,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.riderWebsocketServer.releaseName }}-config
                   key: KAFKA_GROUP_ID
+                  # to be gotten from the
             - name: JWT_SECRET
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.riderWebsocketServer.releaseName }}-config
+                secretKeyRef:
+                  name: {{ .Values.global.application.name }}-secret
                   key: JWT_SECRET
             - name: KAFKAJS_NO_PARTITIONER_WARNING
               valueFrom:

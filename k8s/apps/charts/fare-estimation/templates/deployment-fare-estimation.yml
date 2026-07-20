@@ -48,10 +48,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.fareEstimation.releaseName }}-config
                   key: DB_USER
+                  # referenced from the sealed secret
             - name: DB_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.fareEstimation.releaseName }}-config
+                secretKeyRef:
+                  name: {{ .Values.global.application.name }}-secret
                   key: DB_PASSWORD
             - name: KAFKA_BROKERS
               valueFrom:
@@ -83,10 +84,11 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.fareEstimation.releaseName }}-config
                   key: KAFKA_NOTIFICATION_TOPIC
+            # this will be reference from the sealed secret
             - name: GOOGLE_MAPS_API_KEY
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.fareEstimation.releaseName }}-config
+                secretKeyRef:
+                  name: {{ .Values.global.application.name }}-secret
                   key: GOOGLE_MAPS_API_KEY
             - name: FARE_BASE_FARE
               valueFrom:

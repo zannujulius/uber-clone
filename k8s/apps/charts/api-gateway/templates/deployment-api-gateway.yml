@@ -67,26 +67,31 @@ spec:
                 configMapKeyRef:
                   name: {{ .Values.apiGateway.releaseName }}-config
                   key: DB_USER
+            # secret key ref
             - name: DB_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.apiGateway.releaseName }}-config
+                secretKeyRef:
+                  name: {{ .Values.global.application.name }}-secret
                   key: DB_PASSWORD
+
             - name: JWT_SECRET
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.apiGateway.releaseName }}-config
+                secretKeyRef:
+                  name: {{ .Values.global.application.name }}-secret
                   key: JWT_SECRET
+
             - name: JWT_EXPIRES_IN
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.apiGateway.releaseName }}-config
                   key: JWT_EXPIRES_IN
+
             - name: JWT_REFRESH_SECRET
               valueFrom:
-                configMapKeyRef:
-                  name: {{ .Values.apiGateway.releaseName }}-config
+                secretKeyRef:
+                  name: {{ .Values.global.application.name }}-secret
                   key: JWT_REFRESH_SECRET
+
             - name: JWT_REFRESH_EXPIRES_IN
               valueFrom:
                 configMapKeyRef:

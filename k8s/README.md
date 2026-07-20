@@ -207,3 +207,20 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 ```
 
 Paste the token from above to log in.
+
+### Creating ghcr-secret for the docker-registry
+
+- first login using docker login
+- this should be done in your k8s cluster
+  docker login --username [your github username] --password [personal access token] ghcr.io
+
+kubectl create secret docker-registry ghcr-secret \
+ --docker-server=ghcr.io \
+ --docker-username=zannujulius \
+ --docker-password=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 \
+ --namespace=uber-ns-app
+
+## Naming convenstion for internal service name
+
+- [service-name].[charts i.e postgres].[namespace].[application type. svc, deployment].[cluster].[local]
+  e,g [uber-db-postgresql].[uber-ns-app].[svc].[cluster].[local]

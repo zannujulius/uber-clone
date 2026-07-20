@@ -14,9 +14,9 @@ apiGateway:
     env:
       NODE_ENV: development
   jwt:
-    JWT_SECRET: "eating!!@223upTwich21ggS"
+    JWT_SECRET: "" # it is read from the sealed secret yml
     JWT_EXPIRES_IN: 7d
-    JWT_REFRESH_SECRET: "EVhapen@@!!dsdd"
+    JWT_REFRESH_SECRET: "" # it is read from the sealed secret yml
     JWT_REFRESH_EXPIRES_IN: 30d
   rate_limit:
     RATE_LIMIT_WINDOW_MS: 900000

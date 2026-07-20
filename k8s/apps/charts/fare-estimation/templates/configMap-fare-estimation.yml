@@ -9,7 +9,6 @@ data:
   DB_PORT: {{ .Values.global.database.postgres.DB_PORT | quote }}
   DB_NAME: {{ .Values.global.database.postgres.DB_NAME | quote }}
   DB_USER: {{ .Values.global.database.postgres.DB_USER | quote }}
-  DB_PASSWORD: {{ .Values.global.database.postgres.DB_PASSWORD | quote }}
 
   KAFKA_BROKERS: {{.Values.kafka.BROKERS | quote }}
   KAFKA_CLIENT_ID: {{.Values.kafka.CLIENT_ID | quote }}
@@ -17,8 +16,6 @@ data:
   KAFKA_ESTIMATE_REQUEST_TOPIC: {{.Values.kafka.ESTIMATE_REQUEST_TOPIC | quote }}
   KAFKA_TRIP_REQUEST_TOPIC: {{.Values.kafka.TRIP_REQUEST_TOPIC | quote }}
   KAFKA_NOTIFICATION_TOPIC: {{.Values.kafka.NOTIFICATION_TOPIC | quote }}
-
-  GOOGLE_MAPS_API_KEY: {{.Values.google_api.GOOGLE_MAPS_API_KEY | quote }}
 
   FARE_BASE_FARE: {{.Values.fareEstimation.fare.BASE_FARE | quote }}
   FARE_TIME_RATE: {{.Values.fareEstimation.fare.TIME_RATE | quote }}

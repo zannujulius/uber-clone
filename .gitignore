@@ -30,7 +30,7 @@ Thumbs.db
 database/*.lock
 
 # Kubernetes secrets
-k8s/*-secret.yml
+# k8s/*-secret.yml
 GKE-deployment/*-secret.yml
 
 # Terraform
@@ -40,3 +40,7 @@ GKE-deployment/*-secret.yml
 
 # Docker
 docker-compose.override.yml
+
+k8s/secrets.yml
+
+k8s/sealed-secrets-cert.pem
