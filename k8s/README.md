@@ -208,17 +208,176 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 Paste the token from above to log in.
 
-### Creating ghcr-secret for the docker-registry
+---
 
-- first login using docker login
-- this should be done in your k8s cluster
-  docker login --username [your github username] --password [personal access token] ghcr.io
+## ghcr-secret (private image pull)
 
+The deployments pull images from a **private** GitHub Container Registry (`ghcr.io`). Each deployment declares:
+
+```yaml
+spec:
+  imagePullSecrets:
+    - name: ghcr-secret
+```
+
+so the kubelet needs a `docker-registry` Secret named `ghcr-secret` in `uber-ns-app` to authenticate the pull. Without it the pods fail with `ImagePullBackOff` / `ErrImagePull`.
+
+### 1. Log in to ghcr.io with docker
+
+Authenticate to the registry using your GitHub username and a Personal Access Token (PAT with `read:packages` scope) as the password:
+
+```bash
+docker login ghcr.io \
+  --username <your github username> \
+  --password <personal access token>
+```
+
+### 2. Create the pull secret
+
+`kubectl` builds the correct `kubernetes.io/dockerconfigjson` format for you:
+
+```bash
 kubectl create secret docker-registry ghcr-secret \
- --docker-server=ghcr.io \
- --docker-username=zannujulius \
- --docker-password=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 \
- --namespace=uber-ns-app
+  --docker-server=ghcr.io \
+  --docker-username=zannujulius \
+  --docker-password=<personal access token> \
+  --namespace=uber-ns-app
+```
+
+### Verify
+
+```bash
+kubectl get secret ghcr-secret -n uber-ns-app
+```
+
+> This is a separate Secret from `uber-secret`. It only handles image pulls — it cannot be replaced by the `GIT_USERNAME`/`GIT_PAT` keys in an `Opaque` secret, because `imagePullSecrets` requires the `dockerconfigjson` type. See the Sealed Secrets section for how to seal `ghcr-secret` so it can be committed.
+
+---
+
+## Sealed Secrets
+
+A plain Kubernetes `Secret` is only base64-encoded, not encrypted, so it is never safe to commit to git. The Sealed Secrets controller runs in the cluster and holds a private key. You encrypt a `Secret` with the matching public key using `kubeseal`, producing a `SealedSecret` that is safe to commit. Only the controller in this cluster can decrypt it back into a real `Secret`.
+
+```
+plain Secret  --kubeseal (public key)-->  SealedSecret  -->  git (safe)
+                                                 |
+                                    controller decrypts (private key)
+                                                 |
+                                                 v
+                                     real Secret in uber-ns-app
+```
+
+The app pods never see the SealedSecret. The controller decrypts it into a normal `Secret` named `uber-secret` in `uber-ns-app`, and the deployments read it via `secretKeyRef`.
+
+### 1. Install the controller (Helm)
+
+```bash
+helm repo add sealed-secrets https://bitnami-labs.github.io/sealed-secrets
+helm repo update
+
+helm install sealed-secrets sealed-secrets/sealed-secrets \
+  --namespace sealed-secrets \
+  --create-namespace
+```
+
+Verify the controller and its service are running:
+
+```bash
+kubectl get pods -n sealed-secrets
+kubectl get svc -n sealed-secrets   # expect sealed-secrets + sealed-secrets-metrics
+```
+
+### 2. Install the kubeseal CLI (local machine)
+
+```bash
+brew install kubeseal
+kubeseal --version
+```
+
+### 3. Fetch the public cert
+
+The controller name is `sealed-secrets` and it lives in the `sealed-secrets` namespace. Save the public cert so you can seal offline (this cert is safe to commit — it only encrypts):
+
+```bash
+kubeseal --fetch-cert \
+  --controller-name sealed-secrets \
+  --controller-namespace sealed-secrets \
+  > sealed-secrets-cert.pem
+```
+
+### 4. Write the plain Secret (do NOT commit)
+
+`k8s/secrets.yml` — `name` and `namespace` must be literal (kubeseal cannot seal Helm `{{ }}` templating). Use `stringData` so values are written in plaintext and encoded automatically. Keys must cover every `secretKeyRef` used across the charts (`DB_PASSWORD`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `GOOGLE_MAPS_API_KEY`).
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: uber-secret
+  namespace: uber-ns-app
+type: Opaque
+stringData:
+  JWT_SECRET: "..."
+  JWT_REFRESH_SECRET: "..."
+  DB_PASSWORD: "..."
+  GOOGLE_MAPS_API_KEY: "..."
+```
+
+### 5. Seal it
+
+```bash
+kubeseal --format yaml \
+  --cert sealed-secrets-cert.pem \
+  < k8s/secrets.yml \
+  > k8s/sealed-secret.yml
+```
+
+`k8s/sealed-secret.yml` is encrypted and safe to commit. Delete the plaintext:
+
+```bash
+rm k8s/secrets.yml
+```
+
+### 6. Apply and verify
+
+```bash
+kubectl apply -f k8s/sealed-secret.yml
+
+kubectl get sealedsecret -n uber-ns-app
+kubectl get secret uber-secret -n uber-ns-app   # controller creates this
+```
+
+When the real `uber-secret` appears, the deployments can start.
+
+### Recreating on a fresh cluster
+
+The private key is unique per controller install, so a `SealedSecret` sealed against an old cluster **cannot** be decrypted by a new one. To recreate:
+
+1. Reinstall the controller (step 1).
+2. Re-fetch the cert (step 3) — it is a new key.
+3. Re-seal `k8s/secrets.yml` against the new cert (step 5).
+4. Apply the new `k8s/sealed-secret.yml` (step 6).
+
+(To preserve secrets across rebuilds instead, back up the controller's sealing key: `kubectl get secret -n sealed-secrets -l sealedsecrets.bitnami.com/sealed-secrets-key -o yaml > sealing-key-backup.yaml` — keep this file secret, out of git.)
+
+### Notes
+
+- `--controller-namespace` is the controller's namespace (`sealed-secrets`), NOT where the app runs (`uber-ns-app`).
+- A `SealedSecret` is locked to one name + namespace. Seal `uber-secret` for `uber-ns-app` or decryption fails.
+- The image pull credential (`ghcr-secret`, a `docker-registry` type) is separate — seal it too if you want it in git:
+
+```bash
+kubectl create secret docker-registry ghcr-secret \
+  --docker-server=ghcr.io \
+  --docker-username=zannujulius \
+  --docker-password=ghp_xxxx \
+  --namespace=uber-ns-app \
+  --dry-run=client -o yaml \
+| kubeseal --format yaml --cert sealed-secrets-cert.pem \
+  > k8s/sealed-ghcr-secret.yml
+```
+
+---
 
 ## Naming convenstion for internal service name
 

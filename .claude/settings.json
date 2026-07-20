@@ -1,7 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(kubeseal --version)"
-    ]
+    "allow": ["Bash(kubeseal --version)"]
   }
 }
