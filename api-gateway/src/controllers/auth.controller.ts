@@ -19,10 +19,7 @@ export const registerRider = async (
   if (!handleValidation(req, res)) return;
   try {
     const result = await authService.registerRider(req.body);
-    console.log(
-      "🚀 ~ file: auth.controller.ts:22 ~ registerRider ~ result:",
-      result,
-    );
+
     res.status(201).json({ status: "success", data: result });
   } catch (err) {
     next(err);
