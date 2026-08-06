@@ -34,7 +34,7 @@ app.use(globalLimiter);
 app.get("/health", (_req, res) => {
   res.status(200).json({
     status: "success",
-    message: "API Gateway is running",
+    message: "API Gateway is run!!!! 😂",
     pod: os.hostname(),
     podIp:
       Object.values(os.networkInterfaces())
