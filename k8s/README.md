@@ -13,8 +13,8 @@ Open the Multipass app from Applications and wait for the daemon to start before
 ### Create nodes
 
 ```bash
-multipass launch --name k3s-server --cpus 3 --memory 4G --disk 20G
-multipass launch --name k3s-agent1 --cpus 3 --memory 4G --disk 20G
+multipass launch --name k3s-server --cpus 3 --memory 4G --disk 10G
+multipass launch --name k3s-agent1 --cpus 3 --memory 4G --disk 10G
 ```
 
 ### Install k3s on server
