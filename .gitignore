@@ -18,6 +18,7 @@ logs/
 # Test coverage
 coverage/
 
+values*
 # OS
 .DS_Store
 Thumbs.db

@@ -4,14 +4,14 @@ metadata:
   name: argocd-crd
   namespace: argocd
 spec:
-  project: uber-app # name of the Argo CD project to which the application belongs
+  project: default # name of the Argo CD project to which the application belongs
   source:
     repoURL: https://github.com/zannujulius/uber-clone.git
     targetRevision: HEAD # branch, tag, or commit to deploy
     path: k8s/apps # path to the directory containing the Kubernetes manifests for the application
-    helm:
-      valueFiles:
-        - k8s/sealed-secret.yml # specify the Helm values file to use for the deployment
+    # helm:
+    #   valueFiles:
+    #     - k8s/sealed-secret.yml # specify the Helm values file to use for the deployment
   destination:
     server: https://kubernetes.default.svc
     namespace: uber-ns-app # namespace where the application will be deployed
@@ -19,5 +19,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    syncOptions: 
+    syncOptions:
       - CreateNamespace=true

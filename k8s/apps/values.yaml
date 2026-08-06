@@ -7,13 +7,7 @@ global:
       DB_PORT: 5432
       DB_NAME: ride_hailing_db
       DB_USER: zannujulius
-      DB_PASSWORD: uber_password
-  jwt:
-    JWT_SECRET: "eating!!@223upTwich21ggS"
-    JWT_REFRESH_SECRET: "refresh!!@223upTwich21ggS"
-  namespace:
-    name: uber-ns-app
-  maps:
-    GOOGLE_MAPS_API_KEY: "AIzaSyC8V6tQNc5t-wQb5DUnr1mOwhQ5qcGu7jI"
+    namespace:
+      name: uber-ns-app
   github:
     GIT_USERNAME: zannujulius
