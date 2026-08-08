@@ -19,7 +19,7 @@ env:
 
 permissions:
   contents: read # read this (app) repo
-  packages: write # push images to GHCR with GITHUB_TOKEN
+  packages: write # push images to GHCR with USER_GITHUB_PAT
 
 jobs:
   # 1) Figure out which service directories changed in this push.
@@ -60,7 +60,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.USER_GITHUB_PAT }} # fine-grained PAT, Packages: write
 
       - name: Build and push image (tagged with commit SHA)
         if: needs.detect-changes.outputs[matrix.service] == 'true'
