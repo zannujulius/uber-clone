@@ -82,7 +82,7 @@ export const loginDriver = async ({ email, password }: LoginInput) => {
   }
 
   const tokenPayload: TokenPayload = { id: driver.id, role: "driver" };
-  console.log("Driver logged in:", driver.toJSON());
+  // console.log("Driver logged in:", driver.toJSON());
   return {
     driver: omitPassword(driver.toJSON()),
     token: signToken(tokenPayload),
