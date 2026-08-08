@@ -51,7 +51,7 @@ export const startConsumer = async (): Promise<void> => {
     },
   });
 
-  console.log("Kafka consumer listening on: rider.notifications");
+  console.log("Kafka consumer listening on: rider.notifications !!");
 };
 
 export const disconnectConsumer = async (): Promise<void> => {

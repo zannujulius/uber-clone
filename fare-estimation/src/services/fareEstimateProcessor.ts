@@ -3,10 +3,7 @@ import { FareModel } from "../models/Fare";
 import { publishNotification } from "../kafka/producer";
 import { calculateFare } from "./fareCalculator";
 import { getRouteMetrics } from "./routeMetrics";
-import {
-  EstimateRequestMessage,
-  FareEstimateReadyPayload,
-} from "../types";
+import { EstimateRequestMessage, FareEstimateReadyPayload } from "../types";
 import { trace } from "../utils/trace";
 
 export const processEstimateRequest = async (
@@ -19,6 +16,7 @@ export const processEstimateRequest = async (
       dropoff: `${payload.dropoff_latitude},${payload.dropoff_longitude}`,
     });
     const routeMetrics = await getRouteMetrics(payload);
+    console.log("Route metrics:", routeMetrics);
     const fare = calculateFare(
       routeMetrics.durationMinutes,
       routeMetrics.distanceKm,
