@@ -62,6 +62,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.USER_GITHUB_PAT }} # fine-grained PAT, Packages: write
 
+      - name: Set up QEMU (emulation for cross-arch builds)
+        if: needs.detect-changes.outputs[matrix.service] == 'true'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Buildx (multi-platform builder)
+        if: needs.detect-changes.outputs[matrix.service] == 'true'
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push image (tagged with commit SHA)
         if: needs.detect-changes.outputs[matrix.service] == 'true'
         uses: docker/build-push-action@v6
@@ -69,6 +77,7 @@ jobs:
           context: ./${{ matrix.service }}
           file: ./${{ matrix.service }}/Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64 # arm64 for the local k3s (Apple Silicon), amd64 for cloud clusters
           tags: ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ matrix.service }}:${{ github.sha }}
 
   # 3) Bump the image tag(s) in uber-k8s in ONE commit. Argo picks it up and syncs.
