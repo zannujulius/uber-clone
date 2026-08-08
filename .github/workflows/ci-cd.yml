@@ -113,7 +113,7 @@ jobs:
         env:
           GIT_SHA: ${{ github.sha }}
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name  "${env.OWNER})"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git commit -am "deploy: bump image tags to ${GIT_SHA}"
           git pull --rebase origin main   # safety against a concurrent bump
